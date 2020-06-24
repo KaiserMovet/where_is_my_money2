@@ -8,14 +8,14 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
 
 class GoogleBase:
-    def __init__(self, credentials_path):
+    def __init__(self):
         super().__init__()
-        self._authorize(credentials_path)
+        self._authorize()
 
     def get_service(self):
         return self.service
 
-    def _authorize(self, credentials_path):
+    def _authorize(self):
         creds = None
         if os.path.exists('token.pickle'):
             with open('token.pickle', 'rb') as token:
@@ -26,7 +26,7 @@ class GoogleBase:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    credentials_path, SCOPES)
+                    "credentials.json", SCOPES)
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
             with open('token.pickle', 'wb') as token:

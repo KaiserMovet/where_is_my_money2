@@ -6,8 +6,8 @@ class DataBase:
     CAT = "cat"
     CAT_BASE = "cat_base"
 
-    def __init__(self, sheet_id, credentials_path):
-        self._sheet = Sheet(sheet_id, credentials_path)
+    def __init__(self, sheet_id):
+        self._sheet = Sheet(sheet_id)
 
     def save_transactions(self, transactions: list):
         id_query = " OR ".join(
