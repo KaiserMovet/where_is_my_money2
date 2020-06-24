@@ -4,8 +4,8 @@ SAMPLE_RANGE_NAME = 'A2:E'
 
 
 class Sheet:
-    def __init__(self, sheet_id):
-        self.service = GoogleBase().get_service()
+    def __init__(self, sheet_id, credentials_path):
+        self.service = GoogleBase(credentials_path).get_service()
         self.sheet_id = sheet_id
 
     def _get_results(self, sheet, range="A1:Z"):

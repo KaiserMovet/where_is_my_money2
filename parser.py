@@ -1,6 +1,5 @@
 import pandas as pd
-from pprint import pprint
-from transaction import Transaction
+from .transaction import Transaction
 VALUE = 3
 DATE = 1
 DESC = 6
@@ -64,9 +63,4 @@ class Parser:
         sheetX = xls.parse(0)
         trans_list = []
         sheetX.apply(cls._parse_row, axis=1, trans_list=trans_list)
-        # pprint(type(sheetX))
         return trans_list
-
-
-if __name__ == "__main__":
-    Parser.getTransaction("../op.xlsx")
