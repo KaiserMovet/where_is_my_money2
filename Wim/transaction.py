@@ -3,13 +3,13 @@ from datetime import datetime
 
 
 class Transaction:
-    def __init__(self, date: datetime, value, target, cat=-1):
+    def __init__(self, date: str, value, target, cat=-1, id=None):
         super().__init__()
         self.date = date
         self.value = value
         self.target = target
         self.cat = cat
-        self.id = self._generate_id()
+        self.id = id or self._generate_id()
 
     def _generate_id(self):
         h = hashlib.new('ripemd160')
@@ -19,12 +19,8 @@ class Transaction:
     def toValueList(self):
         return [self.id, self.date, self.value, self.target, self.cat]
 
+    def toDict(self):
+        return {"id": self.id, "value": self.value, "date": self.date, "target": self.target, "cat": self.cat}
+
     def __repr__(self):
         return F"<Transaction {self.date} {self.value} {self.target}>"
-
-
-if __name__ == "__main__":
-    print(Transaction("12", 2, "fdgsdg").id)
-    print(Transaction("sdfsdf", 2.5766, "dsafaf").id)
-    print(Transaction("1dstewt", 255, "astrqeg").id)
-    print(Transaction("sdfvs", 2.8, "afaqg").id)

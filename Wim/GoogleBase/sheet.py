@@ -16,7 +16,6 @@ class Sheet:
         return result
 
     def get_data(self, sheet):
-
         result = self._get_results(sheet)
         return result["values"]
 
@@ -49,9 +48,8 @@ class Sheet:
     def append_data(self, values: list, sheet, range="A1:Z"):
         self._append_data(values, sheet, range)
 
-
-if __name__ == "__main__":
-    trans_sheet_id = "1ybWZLOwXOS4dAHWWL71-CKKhBWUHPKMbRKXjKfKDbC0"
-    a = Sheet(trans_sheet_id)
-    res = a.execute_query("data", "")
-    print(res)
+    def find(self, value, sheet, range="A:A"):
+        value = F'=MATCH("{value}";{sheet}!{range};0)'
+        self._write_data([[value]], "query", "A1")
+        result = self.get_data("query")
+        return result[0][0]

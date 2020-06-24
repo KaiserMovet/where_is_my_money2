@@ -1,21 +1,31 @@
 from parser import Parser
 from GoogleBase import DataBase
+from transaction import Transaction
 
 
 class Wim:
     def __init__(self, trans_sheet_id):
         self.db = DataBase(trans_sheet_id)
         self.parser = Parser()
-        pass
 
-    def parseAndSaveToDataBase(self):
-        transactions = self.parser.getTransaction('../op.xlsx')
+    def parseAndSaveToDataBase(self, path):
+        transactions = self.parser.getTransaction(path)
         self.db.save_transactions(transactions)
-        pass
 
+    def get_transactions(self, year="", month=""):
+        res = self.db.get_transactions(year, month)
+        trans_list = []
+        for row in res:
+            trans_obj = Transaction(
+                date=row[1], value=row[2], target=row[3], cat=row[5], id=row[0])
+            trans_list.append(trans_obj)
+        return trans_list
 
-if __name__ == "__main__":
-    trans_sheet_id = "1ybWZLOwXOS4dAHWWL71-CKKhBWUHPKMbRKXjKfKDbC0"
-    wim = Wim(trans_sheet_id)
-    wim.parseAndSaveToDataBase()
-    pass
+    def edit_cat_of_transaction(self, trans_id: str, cat: int):
+        self.db.edit_cat_of_transaction(trans_id, cat)
+
+    def edit_cat_of_target(self, target: str, cat: int):
+        self.db.edit_cat_of_target(target, cat)
+
+    def get_cat(self):
+        return self.db.get_cat()
