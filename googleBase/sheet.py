@@ -1,5 +1,3 @@
-import threading
-from app import app  # TODO remove this
 from contextlib import contextmanager
 from .googleBase import GoogleBase
 
@@ -9,16 +7,12 @@ SAMPLE_RANGE_NAME = 'A2:E'
 class Sheet:
 
     def __init__(self, sheet_id):
-        if "google_sem" not in app.global_data:
-            app.global_data["google_sem"] = threading.Semaphore()
         self.service = GoogleBase().get_service()
         self.sheet_id = sheet_id
 
     @contextmanager
     def _sheet_values(self):
-        app.global_data["google_sem"].acquire()
         yield self.service.spreadsheets().values()
-        app.global_data["google_sem"].release()
 
     def _get_results(self, sheet, range="A1:Z"):
         range_name = F"{sheet}!" + range

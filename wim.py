@@ -4,8 +4,8 @@ from .transaction import Transaction
 
 
 class Wim:
-    def __init__(self, trans_sheet_id):
-        self.db = DataBase(trans_sheet_id)
+    def __init__(self, trans_sheet_id, semaphore=None):
+        self.db = DataBase(trans_sheet_id, semaphore)
         self.parser = Parser()
 
     def parseAndSaveToDataBase(self, path):
