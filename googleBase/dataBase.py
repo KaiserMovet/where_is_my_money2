@@ -47,7 +47,18 @@ class DataBase:
 
     def get_cat(self):
         res = self._sheet.get_data(self.CAT)
+        res_dict = {}
+        for row in res:
+            res_dict[row[0]] = row[1]
+        return res_dict
+
+    def get_cat_base(self):
+        res = self._sheet.get_data(self.CAT_BASE)
         res_dict = []
         for row in res:
-            res_dict.append({"id": row[0], "name": row[1]})
+            if len(row) > 1:
+                cat = row[1]
+            else:
+                cat = 0
+            res_dict.append({"target": row[0], "cat": int(cat)})
         return res_dict

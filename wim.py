@@ -29,3 +29,6 @@ class Wim:
 
     def get_cat(self):
         return self.db.get_cat()
+
+    def get_cat_base(self):
+        return self.db.get_cat_base()

@@ -47,14 +47,18 @@ class Parser:
         elif(type_of_trans in ['Transakcja BLIK']):
             target = row.iloc[DESC].split(",")[2]
 
-        return target.strip()
+        return desc_decode(target.strip())
 
     @classmethod
     def _parse_row(cls, row, trans_list):
         target = cls._get_target(row)
         value = float(row.iloc[VALUE])
         date = row.iloc[DATE].to_pydatetime().strftime("%Y-%m-%d")
-        trans = Transaction(date, value, target)
+        if value < 0:
+            trans = Transaction(date, -value, target)
+        else:
+            trans = Transaction(date, value, target, 100)
+
         trans_list.append(trans)
 
     @classmethod

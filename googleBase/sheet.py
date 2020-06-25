@@ -1,18 +1,30 @@
+import threading
+from app import app  # TODO remove this
+from contextlib import contextmanager
 from .googleBase import GoogleBase
 
 SAMPLE_RANGE_NAME = 'A2:E'
 
 
 class Sheet:
+
     def __init__(self, sheet_id):
+        if "google_sem" not in app.global_data:
+            app.global_data["google_sem"] = threading.Semaphore()
         self.service = GoogleBase().get_service()
         self.sheet_id = sheet_id
 
+    @contextmanager
+    def _sheet_values(self):
+        app.global_data["google_sem"].acquire()
+        yield self.service.spreadsheets().values()
+        app.global_data["google_sem"].release()
+
     def _get_results(self, sheet, range="A1:Z"):
         range_name = F"{sheet}!" + range
-        sheet = self.service.spreadsheets()
-        result = sheet.values().get(spreadsheetId=self.sheet_id,
-                                    range=range_name).execute()
+        with self._sheet_values() as sv:
+            result = sv.get(spreadsheetId=self.sheet_id,
+                            range=range_name).execute()
         return result
 
     def get_data(self, sheet):
@@ -28,10 +40,10 @@ class Sheet:
     def _write_data(self, values: list, sheet, range="A1:Z"):
         body = {"values": values}
         range_name = F"{sheet}!" + range
-        sheet = self.service.spreadsheets()
-        sheet.values().update(spreadsheetId=self.sheet_id,
-                              valueInputOption="USER_ENTERED",
-                              range=range_name, body=body).execute()
+        with self._sheet_values() as sv:
+            sv.update(spreadsheetId=self.sheet_id,
+                      valueInputOption="USER_ENTERED",
+                      range=range_name, body=body).execute()
 
     def write_data(self, values: list, sheet, range):
         self._write_data(values, sheet, range)
@@ -39,11 +51,11 @@ class Sheet:
     def _append_data(self, values: list, sheet, range="A1:Z"):
         body = {"values": values}
         range_name = F"{sheet}!" + range
-        sheet = self.service.spreadsheets()
-        sheet.values().append(spreadsheetId=self.sheet_id,
-                              valueInputOption="USER_ENTERED",
-                              insertDataOption="INSERT_ROWS",
-                              range=range_name, body=body).execute()
+        with self._sheet_values() as sv:
+            sv.append(spreadsheetId=self.sheet_id,
+                      valueInputOption="USER_ENTERED",
+                      insertDataOption="INSERT_ROWS",
+                      range=range_name, body=body).execute()
 
     def append_data(self, values: list, sheet, range="A1:Z"):
         self._append_data(values, sheet, range)
