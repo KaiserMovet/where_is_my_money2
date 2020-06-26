@@ -85,3 +85,9 @@ class DataBase:
                 cat = 0
             res_dict.append({"target": row[0], "cat": int(cat)})
         return res_dict
+
+    def get_trans_border_dates(self):
+        with self._sheet_obj() as sheet:
+            res = sheet.execute_query(self.DATA, columns="MAX(B), MIN(B)")
+        res = [*res[1]]
+        return res

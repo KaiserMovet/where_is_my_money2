@@ -32,3 +32,6 @@ class Wim:
 
     def get_cat_base(self):
         return self.db.get_cat_base()
+
+    def get_trans_border_dates(self):
+        return self.db.get_trans_border_dates()

@@ -25,8 +25,8 @@ class Sheet:
         result = self._get_results(sheet)
         return result["values"]
 
-    def execute_query(self, query_sheet, query):
-        query_command = F'=QUERY({query_sheet}!A1:Z;"SELECT * {query}")'
+    def execute_query(self, query_sheet, query="", columns="*"):
+        query_command = F'=QUERY({query_sheet}!A1:Z;"SELECT {columns} {query}")'
         self._write_data([[query_command]], "query", "A1")
         result = self.get_data("query")
         return result
