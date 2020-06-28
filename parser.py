@@ -44,7 +44,7 @@ class Parser:
         if(type_of_trans in ['Przelew wychodzacy', 'Przelew przychodzacy', 'Zlecenie stale']):
             target = row[SENDER].value.splitlines()[1]
         elif(type_of_trans in ['Transakcja karta']):
-            target = " ".join(row[DESC].value.split()[3: -4])
+            target = " ".join(row[DESC].value.split()[4: -4])
         elif(type_of_trans in ['Transakcja BLIK']):
             target = row[DESC].value.split(",")[2]
 
