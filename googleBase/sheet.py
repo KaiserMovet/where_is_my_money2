@@ -14,7 +14,7 @@ class Sheet:
     def _sheet_values(self):
         yield self.service.spreadsheets().values()
 
-    def _get_results(self, sheet, range="A1:Z"):
+    def _get_results(self, sheet, range="A1:F"):
         range_name = F"{sheet}!" + range
         with self._sheet_values() as sv:
             result = sv.get(spreadsheetId=self.sheet_id,
@@ -31,7 +31,7 @@ class Sheet:
         result = self.get_data("query")
         return result
 
-    def _write_data(self, values: list, sheet, range="A1:Z"):
+    def _write_data(self, values: list, sheet, range="A1:F"):
         body = {"values": values}
         range_name = F"{sheet}!" + range
         with self._sheet_values() as sv:
@@ -42,7 +42,7 @@ class Sheet:
     def write_data(self, values: list, sheet, range):
         self._write_data(values, sheet, range)
 
-    def _append_data(self, values: list, sheet, range="A1:Z"):
+    def _append_data(self, values: list, sheet, range="A1:F"):
         body = {"values": values}
         range_name = F"{sheet}!" + range
         with self._sheet_values() as sv:
@@ -51,7 +51,7 @@ class Sheet:
                       insertDataOption="INSERT_ROWS",
                       range=range_name, body=body).execute()
 
-    def append_data(self, values: list, sheet, range="A1:Z"):
+    def append_data(self, values: list, sheet, range="A1:F"):
         self._append_data(values, sheet, range)
 
     def find(self, value, sheet, range="A:A"):
