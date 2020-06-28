@@ -91,3 +91,24 @@ class DataBase:
             res = sheet.execute_query(self.DATA, columns="MAX(B), MIN(B)")
         res = [*res[1]]
         return res
+
+    def get_transactions_summary(self, year="", month=""):
+        query = ""
+        if year:
+            if month and month < 12:
+                next_year = year
+                next_month = month + 1
+            else:
+                next_year = year + 1
+                next_month = 1
+            query += \
+                F"WHERE B>=date'{year}-{month}-1' AND "\
+                F"B<date'{next_year}-{next_month}-1'"
+        query += " GROUP BY F"
+        with self._sheet_obj() as sheet:
+            res = sheet.execute_query(
+                self.DATA, query=query, columns=" F, SUM(C)")
+        res_dict = {}
+        for row in res[1:]:
+            res_dict[int(row[0])] = float(row[1])
+        return res_dict

@@ -35,3 +35,7 @@ class Wim:
 
     def get_trans_border_dates(self):
         return self.db.get_trans_border_dates()
+
+    def get_transactions_summary(self, year, month):
+        res = self.db.get_transactions_summary(year, month)
+        return res
