@@ -25,10 +25,11 @@ class Sheet:
         result = self._get_results(sheet)
         return result["values"]
 
-    def execute_query(self, query_sheet, query="", columns="*"):
-        query_command = F'=QUERY({query_sheet}!A1:Z;"SELECT {columns} {query}")'
-        self._write_data([[query_command]], "query", "A1")
-        result = self.get_data("query")
+    def execute_query(self, query_sheet_name, target_sheet, query="", columns="*"):
+        print(F"SHEET NAME: {query_sheet_name}")
+        query_command = F'=QUERY({target_sheet}!A1:Z;"SELECT {columns} {query}")'
+        self._write_data([[query_command]], query_sheet_name, "A1")
+        result = self.get_data(query_sheet_name)
         return result
 
     def _write_data(self, values: list, sheet, range="A1:F"):

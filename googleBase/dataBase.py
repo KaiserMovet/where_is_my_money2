@@ -8,11 +8,12 @@ class DataBase:
     CAT = "cat"
     CAT_BASE = "cat_base"
 
-    def __init__(self, sheet_id, semaphore=None):
+    def __init__(self, sheet_id, query_sheet_name='query1', semaphore=None):
         if semaphore is None:
             semaphore = threading.Semaphore()
         self._sem = semaphore
         self._sheet = Sheet(sheet_id)
+        self.query_sheet_name = query_sheet_name
 
     @contextmanager
     def _sheet_obj(self):
@@ -24,7 +25,8 @@ class DataBase:
         id_query = " OR ".join(
             [F"A='{t.id}'" for t in transactions])
         with self._sheet_obj() as sheet:
-            res = sheet.execute_query(self.DATA, F"WHERE {id_query}")
+            res = sheet.execute_query(
+                self.query_sheet_name, self.DATA, F"WHERE {id_query}")
             current_ids = [row[0] for row in res]
             function_str = \
                 "=IF(EQ(INDIRECT(ADDRESS(ROW();COLUMN()-1)); -1); "\
@@ -51,7 +53,7 @@ class DataBase:
                 next_month = 1
             query = F"WHERE B>=date'{year}-{month}-1' AND B<date'{next_year}-{next_month}-1'"
         with self._sheet_obj() as sheet:
-            res = sheet.execute_query(self.DATA, query)
+            res = sheet.execute_query(self.query_sheet_name, self.DATA, query)
         return res
 
     def edit_cat_of_transaction(self, trans_id: str, cat: int):
@@ -88,7 +90,9 @@ class DataBase:
 
     def get_trans_border_dates(self):
         with self._sheet_obj() as sheet:
-            res = sheet.execute_query(self.DATA, columns="MAX(B), MIN(B)")
+            print("XDDD", self.query_sheet_name)
+            res = sheet.execute_query(
+                self.query_sheet_name, self.DATA, columns="MAX(B), MIN(B)")
         res = [*res[1]]
         return res
 
@@ -106,8 +110,8 @@ class DataBase:
                 F"B<date'{next_year}-{next_month}-1'"
         query += " GROUP BY F"
         with self._sheet_obj() as sheet:
-            res = sheet.execute_query(
-                self.DATA, query=query, columns=" F, SUM(C)")
+            res = sheet.execute_query(self.query_sheet_name,
+                                      self.DATA, query=query, columns=" F, SUM(C)")
         res_dict = {}
         for row in res[1:]:
             res_dict[int(row[0])] = float(row[1])
